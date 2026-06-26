@@ -1,0 +1,137 @@
+# ========================
+# FRONTEND (React/Vite)
+# ========================
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ========================
+# BACKEND (Django/Python)
+# ========================
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.ENV/
+backend/venv/
+backend/env/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+!src/lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Django
+backend/*.log
+backend/local_settings.py
+backend/db.sqlite3
+backend/db.sqlite3-journal
+backend/media/
+backend/staticfiles/
+backend/static/
+
+# ========================
+# ENVIRONMENT & SECURITY
+# ========================
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+backend/.env
+
+# Private keys and credentials
+*.pem
+*.key
+*.p12
+*.p8
+*.ppk
+credentials.json
+service-account-file.json
+
+# ========================
+# TESTING & COVERAGE
+# ========================
+coverage/
+*.lcov
+.nyc_output/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ========================
+# MISC
+# ========================
+# MacOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# Temporary files
+*.swp
+*.swo
+*~
+*.tmp
+*.temp
+
+# Database backups
+*.sql
+*.dump
+*.bak
+*.backup
+
+# Supabase local
+.supabase/

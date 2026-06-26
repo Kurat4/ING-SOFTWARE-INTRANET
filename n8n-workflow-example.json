@@ -1,0 +1,121 @@
+{
+  "name": "Workflow Certificados - Ejemplo",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "certificates",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "tu-webhook-id"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Procesar los certificados recibidos\nconst certificates = $json.certificates || [];\nconst metadata = $json.metadata || {};\n\n// Log de información\nconsole.log(`Procesando ${certificates.length} certificados`);\nconsole.log(`Enviado por: ${metadata.sent_by}`);\n\n// Preparar salida para cada certificado\nconst items = certificates.map(cert => {\n  return {\n    json: {\n      // Datos del estudiante\n      studentName: cert.student_name,\n      studentEmail: cert.student_email,\n      \n      // Datos del curso\n      courseName: cert.course_name,\n      courseCode: cert.course_code,\n      \n      // Datos del programa\n      programName: cert.program_name,\n      programCode: cert.program_code,\n      \n      // Datos académicos\n      academicYear: cert.academic_year,\n      semester: cert.semester,\n      \n      // Metadata\n      issuedDate: new Date().toISOString(),\n      issuedBy: metadata.sent_by,\n      \n      // Ejemplo: URL del certificado (puedes personalizarlo)\n      certificateUrl: `https://certificados.example.com/${cert.course_code}/${cert.student_email}`,\n      \n      // Texto personalizado para el email\n      emailSubject: `Certificado del curso ${cert.course_name}`,\n      emailBody: `Estimado/a ${cert.student_name},\\n\\nNos complace informarle que ha completado exitosamente el curso ${cert.course_name} (${cert.course_code}) del programa ${cert.program_name}.\\n\\nSu certificado está disponible en el siguiente enlace.\\n\\nFelicitaciones por su logro.\\n\\nSaludos cordiales.`\n    }\n  };\n});\n\nreturn items;"
+      },
+      "name": "Procesar Certificados",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "content": "=<h1>Certificado de Finalización</h1>\n\n<p><strong>Nombre del Estudiante:</strong> {{ $json.studentName }}</p>\n<p><strong>Programa:</strong> {{ $json.programName }} ({{ $json.programCode }})</p>\n<p><strong>Curso:</strong> {{ $json.courseName }} ({{ $json.courseCode }})</p>\n<p><strong>Año Académico:</strong> {{ $json.academicYear }}</p>\n<p><strong>Semestre:</strong> {{ $json.semester }}</p>\n<p><strong>Fecha de emisión:</strong> {{ $json.issuedDate }}</p>\n\n<style>\n  body { font-family: Arial, sans-serif; padding: 50px; }\n  h1 { color: #2c3e50; border-bottom: 2px solid #3498db; }\n</style>",
+        "options": {
+          "pageSize": "A4",
+          "landscape": false,
+          "marginTop": 20,\n          "marginBottom": 20,
+          "marginLeft": 20,
+          "marginRight": 20
+        }
+      },
+      "name": "Generar PDF",
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "certificados@example.com",
+        "toEmail": "={{ $json.studentEmail }}",
+        "subject": "={{ $json.emailSubject }}",
+        "text": "={{ $json.emailBody }}",
+        "attachments": "data.pdf",
+        "options": {
+          "attachmentsPropertyName": "data"
+        }
+      },
+      "name": "Enviar Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": true, \"message\": \"Certificados procesados correctamente\", \"total\": $items().length } }}"
+      },
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Procesar Certificados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Procesar Certificados": {
+      "main": [
+        [
+          {
+            "node": "Generar PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generar PDF": {
+      "main": [
+        [
+          {
+            "node": "Enviar Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar Email": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {},
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-01-20T00:00:00.000Z",
+  "versionId": "1"
+}
